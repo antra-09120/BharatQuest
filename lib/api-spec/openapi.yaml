@@ -1,0 +1,239 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: heritage
+    description: Source-backed UNESCO World Heritage records
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /heritage:
+    get:
+      operationId: getHeritage
+      tags: [heritage]
+      summary: List cached UNESCO heritage records for India
+      responses:
+        "200":
+          description: UNESCO World Heritage records for India
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeritageSite"
+        "503":
+          description: Heritage data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /heritage/india:
+    get:
+      operationId: getIndiaHeritage
+      tags: [heritage]
+      summary: List cached UNESCO World Heritage records in India
+      responses:
+        "200":
+          description: UNESCO World Heritage records in India
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeritageSite"
+        "503":
+          description: Heritage data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /heritage/search:
+    get:
+      operationId: searchHeritage
+      tags: [heritage]
+      summary: Search cached Indian UNESCO heritage records
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Matching UNESCO records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeritageSite"
+        "400":
+          description: Search query is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Heritage data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /heritage/region/{region}:
+    get:
+      operationId: getHeritageByRegion
+      tags: [heritage]
+      summary: List Indian UNESCO records in a UNESCO region
+      parameters:
+        - in: path
+          name: region
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matching UNESCO records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeritageSite"
+        "503":
+          description: Heritage data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /heritage/{id}:
+    get:
+      operationId: getHeritageById
+      tags: [heritage]
+      summary: Get a UNESCO World Heritage record by UNESCO identifier
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: UNESCO World Heritage record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeritageSite"
+        "404":
+          description: Heritage record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Heritage data is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    HeritageSite:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: ["string", "null"]
+        shortDescription:
+          type: ["string", "null"]
+        country:
+          type: string
+        state:
+          type: ["string", "null"]
+        region:
+          type: ["string", "null"]
+        latitude:
+          type: ["number", "null"]
+        longitude:
+          type: ["number", "null"]
+        category:
+          type: ["string", "null"]
+        yearInscribed:
+          type: ["integer", "null"]
+        criteria:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        imageAuthor:
+          type: ["string", "null"]
+        imageCopyright:
+          type: ["string", "null"]
+        imageCaption:
+          type: ["string", "null"]
+        components:
+          type: ["string", "null"]
+        sourceName:
+          type: string
+        sourceUrl:
+          type: string
+        sourceType:
+          type: string
+          enum: [UNESCO]
+      required:
+        - id
+        - name
+        - description
+        - shortDescription
+        - country
+        - state
+        - region
+        - latitude
+        - longitude
+        - category
+        - yearInscribed
+        - criteria
+        - imageUrl
+        - imageAuthor
+        - imageCopyright
+        - imageCaption
+        - components
+        - sourceName
+        - sourceUrl
+        - sourceType
+

@@ -1,0 +1,954 @@
+Build a polished, highly interactive mobile prototype called "BharatQuest" for Smart India Hackathon 2026 Problem Statement SIH26208.
+
+IMPORTANT: Do not create a generic educational app. This must feel like a real adventure/game product whose GAME WORLD is India's civilization, history and culture.
+
+==================================================
+1. PRODUCT
+==================================================
+
+APP NAME:
+BharatQuest
+
+TAGLINE:
+"Play. Explore. Discover India's Heritage."
+
+PROBLEM STATEMENT:
+SIH26208 — Student Innovation-Challenge: conceptualize and develop unique toys and games based on our civilization, history and culture.
+
+CORE IDEA:
+BharatQuest transforms India's heritage into an interactive exploration game.
+
+The player:
+EXPLORES → DISCOVERS → PLAYS → EARNS XP → COLLECTS → UNLOCKS
+
+The prototype should demonstrate how historical and cultural knowledge can become the actual game environment.
+
+==================================================
+2. TECH STACK
+==================================================
+
+Use:
+
+Frontend:
+- React Native
+- Expo
+- TypeScript
+
+Navigation:
+- Expo Router or React Navigation
+
+State:
+- React Context or Zustand
+
+Backend:
+- Node.js
+- Express
+
+Database:
+- PostgreSQL or Replit Database for prototype persistence
+
+Maps:
+- Use a lightweight map solution that does NOT require a paid Google Maps key for the initial prototype.
+- Prefer a stylized interactive India map/SVG for the main Explore screen.
+- Use latitude/longitude from UNESCO data for heritage locations.
+- Do not invent coordinates.
+
+Data:
+- Fetch authoritative heritage information from UNESCO Open Data.
+- Use Government of India Open Government Data (data.gov.in) where an appropriate official dataset is available.
+- Cache retrieved data on the backend so the app remains usable if the external API is temporarily unavailable.
+
+==================================================
+3. AUTHORITATIVE DATA REQUIREMENT
+==================================================
+
+THIS IS VERY IMPORTANT:
+
+Do NOT invent historical facts, dates, UNESCO status, coordinates, descriptions or heritage classifications.
+
+Every factual heritage item displayed in the application must have a "Source" field.
+
+PRIMARY SOURCE:
+UNESCO World Heritage DataHub:
+https://data.unesco.org/explore/dataset/whc001/
+
+Dataset:
+whc001 — World Heritage List
+
+UNESCO API documentation:
+https://data.unesco.org/api-console/explore/v2.1/
+
+UNESCO API dataset endpoint pattern:
+https://data.unesco.org/api/explore/v2.1/catalog/datasets/whc001/records/
+
+Use fields such as:
+- name_en
+- short_description_en
+- description_en where available
+- date_inscribed
+- category
+- cultural_criteria
+- criteria_txt
+- states_names
+- coordinates
+- main_image_url
+- main_image_author
+- main_image_copyright
+- main_image_caption_en
+- components_list
+
+Filter the UNESCO dataset to India using the appropriate country/state field rather than manually inventing a list.
+
+SOURCE ATTRIBUTION:
+Every UNESCO-derived heritage detail should display:
+"Source: UNESCO World Heritage DataHub"
+
+And provide a "View Source" button linking to:
+https://data.unesco.org/explore/dataset/whc001/
+
+SECONDARY OFFICIAL SOURCE:
+Government of India's Open Government Data Platform:
+https://data.gov.in/
+
+Use it for Indian government datasets when relevant, especially datasets published by:
+- Ministry of Culture
+- Archaeological Survey of India (ASI)
+- Ministry of Tourism
+
+Relevant official ASI/government dataset examples:
+https://www.data.gov.in/
+
+Search/use official ASI protected-monument datasets from the data.gov.in catalog rather than creating unsupported monument lists.
+
+For government-derived information display:
+"Source: Government of India — data.gov.in"
+
+SOURCE PRIORITY:
+1. UNESCO / official international heritage source
+2. Government of India / ASI / Ministry of Culture
+3. Only if neither source provides a required field, leave that field unavailable rather than inventing it.
+
+Never silently replace missing authoritative information with AI-generated facts.
+
+==================================================
+4. DATA ARCHITECTURE
+==================================================
+
+Create a backend service.
+
+Backend responsibilities:
+
+GET /api/heritage
+GET /api/heritage/:id
+GET /api/heritage/india
+GET /api/heritage/search?q=
+GET /api/heritage/region/:region
+
+The backend should fetch UNESCO data server-side rather than exposing API credentials in the mobile application.
+
+Create a normalization layer:
+
+UNESCO API
+      ↓
+Backend Fetcher
+      ↓
+Data Validation
+      ↓
+Normalized Heritage Object
+      ↓
+Database Cache
+      ↓
+React Native App
+
+Normalized object:
+
+{
+  id,
+  name,
+  description,
+  shortDescription,
+  country,
+  state,
+  latitude,
+  longitude,
+  category,
+  yearInscribed,
+  criteria,
+  imageUrl,
+  imageAuthor,
+  imageCopyright,
+  sourceName,
+  sourceUrl,
+  sourceType
+}
+
+Do not store fabricated values.
+
+==================================================
+5. DESIGN LANGUAGE
+==================================================
+
+The app should look like a premium adventure game, NOT a school project.
+
+Visual direction:
+
+- Warm ivory/cream background
+- Deep navy text
+- Saffron/gold highlights
+- Terracotta accents
+- Subtle Indian-inspired geometric patterns
+- Rounded cards
+- Soft shadows
+- Large illustrations
+- Premium typography
+- Strong visual hierarchy
+- Smooth transitions
+- Micro animations
+- Progress bars
+- Achievement effects
+- Game-like cards
+- Heritage-inspired iconography
+
+Avoid:
+- Excessive flags
+- Generic textbook graphics
+- Cartoonish childish design
+- Too many colors
+- Overly complicated UI
+- Fake historical imagery presented as real
+
+Use actual source images only when licensing/source information permits it.
+
+==================================================
+6. APP STRUCTURE
+==================================================
+
+Create these main sections:
+
+HOME
+EXPLORE
+MISSIONS
+COLLECTION
+PROFILE
+
+Bottom navigation:
+
+Home | Explore | Missions | Collection | Profile
+
+==================================================
+7. SCREEN 1 — SPLASH / ONBOARDING
+==================================================
+
+Create a cinematic opening.
+
+Logo:
+BHARATQUEST
+
+Subtitle:
+"Your journey through India's stories begins."
+
+Visual:
+A stylized Indian heritage landscape with monuments, patterns and an explorer motif.
+
+Buttons:
+"START JOURNEY"
+"EXPLORE AS GUEST"
+
+==================================================
+8. SCREEN 2 — HOME
+==================================================
+
+Header:
+
+"Namaste, Explorer 👋"
+
+Display:
+Level 4
+XP 740 / 1000
+Current streak
+
+Main feature card:
+
+"CONTINUE YOUR JOURNEY"
+
+Example:
+"Heritage Explorer"
+
+Progress:
+3 / 5 missions
+
+Button:
+"CONTINUE"
+
+Below:
+
+"DAILY CHALLENGE"
+
+Example challenge:
+"Can you identify the heritage site?"
+
+Button:
+"PLAY"
+
+Then:
+
+"FEATURED HERITAGE"
+
+Populate these cards from REAL UNESCO data.
+
+Do not use invented historical descriptions.
+
+==================================================
+9. SCREEN 3 — EXPLORE INDIA
+==================================================
+
+Create a beautiful interactive India exploration screen.
+
+Header:
+"Explore India"
+
+Subtitle:
+"Every place has a story."
+
+Display an interactive stylized India map.
+
+Use actual UNESCO coordinates for heritage markers.
+
+Marker colors can represent:
+- Cultural
+- Natural
+- Mixed
+
+When the player taps a marker:
+
+Show bottom sheet:
+
+SITE NAME
+LOCATION
+CATEGORY
+YEAR INSCRIBED
+
+Example structure:
+
+"Agra Fort"
+
+"Cultural Heritage"
+
+"Inscribed: 1983"
+
+"Explore Story →"
+
+The factual content must come from the UNESCO dataset.
+
+Add filters:
+
+All
+Cultural
+Natural
+Mixed
+
+Also add:
+"Near Me"
+
+If location permission is granted, show the user's approximate location and calculate distance to cached heritage locations.
+
+Do not store precise user location unless necessary.
+
+==================================================
+10. SCREEN 4 — HERITAGE DETAIL
+==================================================
+
+Create a premium heritage detail page.
+
+Top:
+Large source image
+
+Below:
+Site name
+Location
+Category
+Year inscribed
+
+Sections:
+
+"THE STORY"
+
+Use the UNESCO description/short description.
+
+"WHY IT MATTERS"
+
+Only display authoritative information available in the source.
+
+"LOCATION"
+
+Show coordinates/location.
+
+"YOUR MISSION"
+
+Generate a GAME TASK based ONLY on the factual fields available.
+
+Examples:
+
+- Identify the correct era from choices based on the site's documented inscription/history.
+- Match the site to its region.
+- Match the site to its UNESCO category.
+- Identify the correct image/site from three choices.
+
+Do not invent historical facts.
+
+At bottom:
+
+"Source: UNESCO World Heritage DataHub"
+
+Button:
+"VIEW SOURCE"
+
+==================================================
+11. SCREEN 5 — MISSIONS
+==================================================
+
+Create game missions.
+
+Mission categories:
+
+1. Heritage Hunt
+2. Culture Match
+3. History Challenge
+4. Map Explorer
+5. Artifact/Architecture Match
+
+Each mission has:
+
+Title
+Difficulty
+XP reward
+Progress
+Start button
+
+Example:
+
+"HERITAGE HUNT"
+
+"Find 3 UNESCO heritage sites from India."
+
+Reward:
++150 XP
+
+==================================================
+12. SCREEN 6 — MINI GAME
+==================================================
+
+Create a polished playable mini-game.
+
+GAME:
+"HERITAGE MATCH"
+
+Show one real UNESCO heritage site and four possible answers.
+
+Example mechanics:
+
+Question:
+"Which category does this World Heritage Site belong to?"
+
+Options:
+Cultural
+Natural
+Mixed
+Not listed
+
+After answering:
+
+Correct:
++50 XP
+
+Incorrect:
+Show correct answer with source-backed explanation.
+
+Do not make the explanation up.
+
+Show:
+Score
+Question number
+Progress
+
+Add animations for correct/incorrect responses.
+
+==================================================
+13. SECOND MINI GAME — MAP CHALLENGE
+==================================================
+
+Create another playable prototype game:
+
+"WHERE IN INDIA?"
+
+Show a heritage site.
+
+Ask:
+"Tap the region where this site is located."
+
+Use actual coordinates/state/country data.
+
+Reward:
++75 XP
+
+After answer:
+Show actual location.
+
+This demonstrates the combination of:
+MAP + HERITAGE + GAMEPLAY.
+
+==================================================
+14. SCREEN — COLLECTION
+==================================================
+
+Title:
+"My Collection"
+
+Subtitle:
+"Collect stories from across India."
+
+Create collectible cards.
+
+Each card:
+
+Image
+Site name
+Region
+Category
+Year
+Rarity
+XP value
+
+IMPORTANT:
+"Rarity" and XP are GAME VALUES, not historical claims.
+
+Clearly separate game metadata from factual metadata.
+
+Examples:
+Common
+Rare
+Epic
+Legendary
+
+These should be assigned by a deterministic game rule, not presented as cultural facts.
+
+Locked cards:
+"Unlock by completing 3 missions."
+
+==================================================
+15. SCREEN — JOURNEY THROUGH TIME
+==================================================
+
+Create a beautiful progression timeline.
+
+Use historical eras only when supported by the source data.
+
+For the prototype, present the concept as:
+
+"JOURNEY THROUGH TIME"
+
+Ancient
+Medieval
+Colonial
+Modern
+
+But DO NOT attach unsupported facts to specific sites.
+
+Use these eras primarily as a GAME PROGRESSION concept.
+
+Show:
+
+✓ Current Progress
+🔒 Future Mission
+🔒 Future Region
+
+Text:
+"Complete missions to unlock new chapters."
+
+==================================================
+16. SCREEN — ACHIEVEMENTS
+==================================================
+
+Create:
+
+"HERITAGE EXPLORER"
+Explore 5 heritage locations.
+
+"MAP MASTER"
+Complete 3 map challenges.
+
+"CULTURE HUNTER"
+Collect 10 culture cards.
+
+"HISTORY SEEKER"
+Complete 10 heritage missions.
+
+These are game achievements, not factual claims.
+
+==================================================
+17. PROFILE
+==================================================
+
+Show:
+
+Explorer name
+Level
+XP
+Missions completed
+Sites discovered
+Badges
+
+Settings:
+- Language
+- Notifications
+- Location permission
+- Data sources
+- About BharatQuest
+
+Add a "Data Sources" page.
+
+==================================================
+18. DATA SOURCES PAGE
+==================================================
+
+This is VERY IMPORTANT for the SIH presentation.
+
+Create a dedicated screen:
+
+"OUR SOURCES"
+
+UNESCO World Heritage DataHub
+World Heritage List
+https://data.unesco.org/explore/dataset/whc001/
+
+Government of India Open Government Data
+https://data.gov.in/
+
+Archaeological Survey of India
+https://asi.nic.in/
+
+Ministry of Culture
+https://www.indiaculture.gov.in/
+
+For every heritage card, display its specific source.
+
+Do not claim that every piece of information comes from ASI if it actually came from UNESCO.
+
+==================================================
+19. OFFLINE / FALLBACK BEHAVIOR
+==================================================
+
+The prototype should still work if the external API is unavailable.
+
+Create a small cached dataset of verified UNESCO India records by fetching them during backend initialization.
+
+The cached records must come from the UNESCO API/export and be stored with their source URLs.
+
+Do NOT manually fabricate fallback historical data.
+
+If the external service fails and no cached data exists, show:
+
+"Heritage data is temporarily unavailable. Please try again."
+
+Never substitute invented content.
+
+==================================================
+20. SEARCH
+==================================================
+
+Add global search.
+
+Search:
+- Heritage site name
+- Country
+- Region
+- Category
+
+Results should come from the backend dataset.
+
+Show source attribution on results.
+
+==================================================
+21. GAME PROGRESSION
+==================================================
+
+Implement a simple working progression system.
+
+Initial:
+Level 1
+0 XP
+
+XP examples:
+
+Discover site:
++20 XP
+
+Complete map challenge:
++75 XP
+
+Complete heritage mission:
++100 XP
+
+Complete daily challenge:
++50 XP
+
+Level formula:
+Every 500 XP = next level.
+
+Store:
+- XP
+- level
+- discovered sites
+- completed missions
+- badges
+
+Use local persistence for the prototype.
+
+==================================================
+22. GAMIFICATION
+==================================================
+
+Implement:
+
+XP
+Levels
+Badges
+Missions
+Daily challenge
+Collection
+Locked content
+Progress bars
+Streak
+
+Do not use gambling mechanics, loot boxes or paid rewards.
+
+==================================================
+23. AI — OPTIONAL, DO NOT HALLUCINATE
+==================================================
+
+Do NOT use an LLM to invent historical information.
+
+If an AI feature is implemented, restrict it to:
+
+"Ask BharatQuest"
+
+The assistant may answer ONLY using retrieved source documents/data.
+
+Every factual answer must provide:
+
+Source:
+UNESCO / Government of India
+
+If the retrieved sources do not contain the answer, respond:
+
+"I couldn't find an authoritative answer in the connected sources."
+
+For the first prototype, the AI assistant can remain disabled or mocked as a future feature.
+
+==================================================
+24. PERFORMANCE
+==================================================
+
+Optimize for a student hackathon prototype.
+
+Requirements:
+- Fast startup
+- Lazy load images
+- Cache API responses
+- Avoid unnecessary API requests
+- Responsive mobile UI
+- Good empty/loading/error states
+- Smooth animations
+- No crashes if API is unavailable
+
+==================================================
+25. SECURITY
+==================================================
+
+Never expose API keys in frontend code.
+
+Use environment variables:
+
+UNESCO_API_KEY=
+DATA_GOV_API_KEY=
+
+If UNESCO's endpoint can be accessed without a key, use it appropriately; otherwise use the API key through the backend only.
+
+Never commit secrets to GitHub.
+
+Create .env.example with placeholder values.
+
+==================================================
+26. README
+==================================================
+
+Create a detailed README containing:
+
+Project name:
+BharatQuest
+
+Problem Statement:
+SIH26208
+
+Concept:
+Gamified exploration of India's civilization, history and culture.
+
+Tech stack:
+React Native
+Expo
+TypeScript
+Node.js
+Express
+Database
+
+Data sources:
+UNESCO World Heritage DataHub
+Government of India data.gov.in
+ASI
+Ministry of Culture
+
+Explain exactly which information comes from which source.
+
+Include setup instructions.
+
+Include environment variables.
+
+Include API architecture.
+
+Include data flow.
+
+==================================================
+27. SIH DEMO MODE
+==================================================
+
+Create a "Demo Mode" that makes the prototype presentation-ready.
+
+Demo Mode should provide a guided path:
+
+1. Open Home
+2. Tap Explore
+3. Select a real UNESCO Indian heritage site
+4. Read its source-backed information
+5. Start a mission
+6. Complete a mini-game
+7. Earn XP
+8. Unlock a Culture Card
+9. Show Collection
+10. Show Data Sources
+
+Add subtle "Demo" indicators if appropriate.
+
+==================================================
+28. VISUAL POLISH
+==================================================
+
+Make this look like a serious hackathon product.
+
+Use:
+- Beautiful cards
+- Smooth page transitions
+- Hero images
+- Map markers
+- XP animations
+- Achievement animation
+- Skeleton loading
+- Empty states
+- Error states
+- Accessible typography
+- Touch-friendly buttons
+
+Do not make the UI look AI-generated or like a basic CRUD application.
+
+==================================================
+29. IMPORTANT PRODUCT POSITIONING
+==================================================
+
+The core pitch must be visible in the product:
+
+"India's heritage becomes the game world."
+
+The app is NOT:
+- a Wikipedia clone
+- a tourism directory
+- a history textbook
+- a generic quiz app
+
+It IS:
+- an exploration game
+- a cultural discovery experience
+- a collection game
+- a map-based adventure
+- a platform for reimagining traditional Indian games and heritage through digital gameplay
+
+==================================================
+30. FUTURE SCOPE
+==================================================
+
+Show these as "Coming Soon":
+
+AR Heritage Hunt
+Multiplayer Cultural Challenges
+Regional Languages
+Traditional Indian Games
+School/Teacher Mode
+Museum Mode
+Location-based Missions
+Community-created challenges with moderation
+
+Do not pretend these features are currently implemented.
+
+==================================================
+31. FINAL REQUIREMENT
+==================================================
+
+Build the actual working prototype now.
+
+Do not just create a design mockup.
+
+Implement:
+- Navigation
+- Screens
+- Real UNESCO data retrieval
+- Backend
+- Database/cache
+- Search
+- Map/heritage exploration
+- At least two playable mini-games
+- XP system
+- Collection
+- Achievements
+- Source attribution
+- Loading states
+- Error states
+- Demo Mode
+
+Before finishing:
+1. Run the app.
+2. Test all navigation.
+3. Test the UNESCO data fetch.
+4. Test the India filter.
+5. Test at least 3 real Indian UNESCO heritage records.
+6. Test the mini-games.
+7. Test XP progression.
+8. Test Collection.
+9. Test source links.
+10. Fix runtime errors.
+
+Do not claim a feature is working unless you actually test it.
+
+The final result should be a polished, presentation-ready SIH prototype that demonstrates:
+
+AUTHENTIC DATA
++
+INDIAN HERITAGE
++
+MAP EXPLORATION
++
+GAMEPLAY
++
+XP / COLLECTION
++
+CULTURAL DISCOVERY
+
+= BHARATQUEST
+"Play. Explore. Discover India's Heritage."

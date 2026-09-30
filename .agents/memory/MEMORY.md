@@ -1,0 +1,1 @@
+- [Expo devtools runtime](expo-devtools-runtime.md) — a missing `libglib` can block React Native DevTools while Metro and the app still work.

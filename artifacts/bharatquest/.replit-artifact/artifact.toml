@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/bharatquest/"
+title = "BharatQuest"
+description = "A mobile heritage adventure game where players explore India's UNESCO World Heritage sites, complete source-backed challenges, earn XP, and collect cultural discovery cards."
+version = "1.0.0"
+id = "artifacts/bharatquest"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/bharatquest/" ]
+localPort = 20046
+
+[services.development]
+run = "pnpm --filter @workspace/bharatquest run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bharatquest", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/bharatquest", "run", "serve" ]
+
+[services.env]
+PORT = "20046"
+BASE_PATH = "/bharatquest/"
